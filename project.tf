@@ -8,9 +8,14 @@ resource "openstack_identity_project_v3" "project" {
 resource "openstack_blockstorage_quotaset_v3" "project" {
   # Skip projects where quotas has no blockstorage keys, else fails with
   # {"code": 400, "message": "Invalid input for field/attribute quota_set. Value: {}. {} does not have enough properties"}
-  for_each = {for name, proj in var.projects: name => proj if contains(keys(proj), "blockstorage_quota")}
-  
+  for_each = {
+    for name, proj in var.projects :
+    name => proj
+    if proj.blockstorage_quota != null
+  }
+
   project_id = openstack_identity_project_v3.project[each.key].id
+
   # so need to set these to null if not required
   volumes              = lookup(each.value.blockstorage_quota, "volumes", null)
   snapshots            = lookup(each.value.blockstorage_quota, "snapshots", null)
@@ -26,6 +31,7 @@ resource "openstack_blockstorage_quotaset_v3" "project" {
   #   snapshots_$TYPE = 10
   # }
 }
+
 
 resource "openstack_compute_quotaset_v2" "project" {
   for_each = {for name, proj in var.projects: name => proj if contains(keys(proj), "compute_quota")}
