@@ -9,7 +9,7 @@ resource "openstack_sharedfilesystem_sharetype_v2" "sharetypes" {
     extra_specs = merge(
         { for k, v in each.value.extra_specs: k => tostring(v) if k != "vast_vippool_name"},
         contains(keys(each.value.extra_specs), "vast_vippool_name") ? {
-        "vast:vippoolname" = try(vastdata_vip_pool.vippools[each.value.extra_specs.vast_vippool_name].name, null)
+        "vast:vippool_name" = try(vastdata_vip_pool.vippools[each.value.extra_specs.vast_vippool_name].name, null)
         } : {}
     )
 }
