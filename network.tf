@@ -80,7 +80,7 @@ resource "openstack_networking_router_interface_v2" "interfaces" {
   for_each = merge([
     for router_key, router in var.routers : {
       for iface in lookup(router, "interfaces", []) :
-      "interface-${router_key}-${coalesce(iface.subnet, iface.subnet_id, iface.port)}" => {
+      "interface-${router_key}-${coalesce(iface.subnet, iface.subnet_id, iface.port_id)}" => {
         router = router_key
         iface  = iface
       }
@@ -93,4 +93,3 @@ resource "openstack_networking_router_interface_v2" "interfaces" {
   port_id       = lookup(each.value.iface, "port_id", null)
   force_destroy = lookup(each.value.iface, "force_destroy", false)
 }
-
