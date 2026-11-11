@@ -1,7 +1,7 @@
 resource "openstack_sharedfilesystem_sharetype_v2" "sharetypes" {
     for_each = var.sharetypes
 
-    name = each.key
+    project_name = each.value.project_name != null ? openstack_identity_project_v3.project[each.value.project_name].id : each.key
 
     description = lookup(each.value, "description", null)
     is_public  = lookup(each.value, "is_public", true)
