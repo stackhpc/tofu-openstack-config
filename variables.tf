@@ -345,6 +345,9 @@ variable "images"{
 variable "sharetypes" {
   description = <<-EOT
     Mapping of sharetype definitions. Key is sharetype name. Values are mappings with keys/values:
+      project_name: Optional string, name of project sharetype will be used for. If defined
+      openstack name of sharetype will be project ID (for azimuth support). If undefined
+      sharetype openstack name will be resource key.
       description: Optional string
       is_public: Optional bool, default true
       extra_specs: Required map
@@ -355,8 +358,9 @@ variable "sharetypes" {
   EOT
   type = map(
     object({
-      description = optional(string)
-      is_public   = optional(bool, true)
+      project_name = optional(string)
+      description  = optional(string)
+      is_public    = optional(bool, true)
 
       extra_specs = map(any)
     })
