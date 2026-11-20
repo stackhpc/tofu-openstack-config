@@ -2,9 +2,9 @@ resource "vastdata_vip_pool" "vippools" {
   for_each = var.vippools
 
   name        = each.value.name != null ? (each.value.name) : (each.value.network != null ? format("openstack_vlan_%04d",
-    one(openstack_networking_network_v2.networks[each.value.network].segments).segmentation_id)
+    one(var.networks[each.value.network].segments).segmentation_id)
     : each.key)
-  vlan        = each.value.vlan != null ? (each.value.vlan) : one(openstack_networking_network_v2.networks[each.value.network].segments).segmentation_id
+  vlan        = each.value.vlan != null ? (each.value.vlan) : one(var.networks[each.value.network].segments).segmentation_id
   role        = lookup(each.value, "role", null)
   subnet_cidr = lookup(each.value, "subnet_cidr", null)
   tenant_id   = (each.value.vast_tenant != null ? vastdata_tenant.vast_tenant[each.value.vast_tenant].id : each.value.tenant_id)
