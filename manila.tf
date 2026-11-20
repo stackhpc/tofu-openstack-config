@@ -1,17 +1,9 @@
 resource "openstack_sharedfilesystem_sharetype_v2" "sharetypes" {
-    for_each = var.sharetypes
-
-    name = each.key
-
-    description = lookup(each.value, "description", null)
-    is_public  = lookup(each.value, "is_public", true)
-
-    extra_specs = merge(
-        { for k, v in each.value.extra_specs: k => tostring(v) if k != "vast_vippool_name"},
-        contains(keys(each.value.extra_specs), "vast_vippool_name") ? {
-        "vast:vippool_name" = try(vastdata_vip_pool.vippools[each.value.extra_specs.vast_vippool_name].name, null)
-        } : {}
-    )
+  for_each    = var.sharetypes
+  name        = each.value.project_name != null ? openstack_identity_project_v3.project[each.value.project_name].id : each.key
+  description = each.value.description
+  is_public   = each.value.is_public
+  extra_specs = { for k, v in each.value.extra_specs : k => tostring(v) }
 }
 
 resource "openstack_sharedfilesystem_sharetype_access_v2" "sharetypes_access" {

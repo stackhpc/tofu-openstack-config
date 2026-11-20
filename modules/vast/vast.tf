@@ -10,8 +10,8 @@ resource "vastdata_vip_pool" "vippools" {
   tenant_id   = (each.value.vast_tenant != null ? vastdata_tenant.vast_tenant[each.value.vast_tenant].id : each.value.tenant_id)
   ip_ranges   = each.value.ip_ranges != null ? (each.value.ip_ranges) : [
     for r in each.value.vip_ranges : [
-      cidrhost(openstack_networking_subnet_v2.subnets[r.subnet].cidr, r.start),
-      cidrhost(openstack_networking_subnet_v2.subnets[r.subnet].cidr, r.end)
+      cidrhost(var.subnets[r.subnet].cidr, r.start),
+      cidrhost(var.subnets[r.subnet].cidr, r.end)
     ]
   ]
 }
@@ -24,8 +24,8 @@ resource "vastdata_tenant" "vast_tenant" {
   allow_disabled_users = lookup(each.value, "allow_disabled_users", null)
   client_ip_ranges     = each.value.client_ip_ranges != null ? (each.value.client_ip_ranges) : [
     for p in each.value.client_ranges : [
-      cidr(openstack_networking_subnet_v2.subnets[p.subnet].cidr, p.start),
-      cidr(openstack_networking_subnet_v2.subnets[p.subnet].cidr, p.end)
+      cidrhost(var.subnets[p.subnet].cidr, p.start),
+      cidrhost(var.subnets[p.subnet].cidr, p.end)
     ]
   ]
 }
