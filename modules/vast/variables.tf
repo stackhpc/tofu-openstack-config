@@ -82,7 +82,7 @@ variable "vast_tenants" {
 
 ## Manila sharetypes
 
-variable "sharetypes" {
+variable "vast_sharetypes" {
   description = <<-EOT
     Mapping of sharetype definitions. Key is sharetype name. Values are mappings with keys/values:
       description: Optional string
@@ -95,22 +95,23 @@ variable "sharetypes" {
   EOT
   type = map(
     object({
-      description = optional(string)
-      is_public   = optional(bool, true)
+      project_name = optional(string)
+      description  = optional(string)
+      is_public    = optional(bool, true)
 
       extra_specs = map(any)
     })
   )
 
   validation {
-    condition = alltrue([ for k, v in var.sharetypes :
+    condition = alltrue([ for k, v in var.vast_sharetypes :
     contains(keys(v.extra_specs), "driver_handles_share_servers") &&
     can(tobool(v.extra_specs["driver_handles_share_servers"])) ])
     error_message = "Each entry's extra_specs must include driver_handles_share_servers (bool)."
   }
 
   validation {
-    condition = alltrue([ for k, v in var.sharetypes :
+    condition = alltrue([ for k, v in var.vast_sharetypes :
     !contains(keys(v.extra_specs), "vast_vippool_name") ||
     can(vastdata_vip_pool.vippools[v.extra_specs.vast_vippool_name].name)
     ])
@@ -120,7 +121,7 @@ variable "sharetypes" {
   default = {}
 }
 
-variable "sharetypes_access" {
+variable "vast_sharetypes_access" {
   description = <<-EOT
     Mappings of sharetype access definitions. Key is tofu sharetype access resource name. Values are mappings with keys/values:
     sharetype_name: Optional string, tofu sharetype resource name, overrides share_type_id
@@ -138,3 +139,4 @@ variable "sharetypes_access" {
   )
   default = {}
 }
+
