@@ -36,8 +36,8 @@ on the vastdata provider config can be found in the [HashiCorp Terrafrom docs](h
 
 To connect the VAST resource to OpenStack the VAST module needs to be used
 alongside the OpenStack module.
-In addition, `sharetypes` and `sharetypes_access` resources need to be used within
-the VAST module. The `sharetypes` resource is required to have
+In addition, `vast_sharetypes` and `vast_sharetypes_access` resources need to be used within
+the VAST module. The `vast_sharetypes` resource is required to have
 `vast_vippool_name` defined in the `extra_specs` block to connect VAST.
 
 
@@ -66,8 +66,9 @@ module "vast" {
   vippools     = ...
 
   # openstack resources for VAST
-  sharetypes        = ...
-  sharetypes_access = ...
+  vast_sharetypes        = ...
+  vast_sharetypes_access = ...
+}
 
 ```
 
