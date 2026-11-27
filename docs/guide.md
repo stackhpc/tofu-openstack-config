@@ -10,11 +10,12 @@ as follows:
 
 ```console
 module "openstack" {
-    source =
+  source = "github.com/stackhpc/tofu-openstack-config//modules/openstack?ref=main"
 
-    projects = local.project-config
-    networks = local.network-config
-    ...
+  projects = local.project-config
+  networks = local.network-config
+  ...
+
 }
 ```
 

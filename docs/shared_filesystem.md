@@ -16,15 +16,13 @@ Example usage:
 ```console
 sharetypes = {
     client_sharetype = {
-      name = "client-vast"
+      name = "client"
       description = "client - data"
       is_public = false
 
       extra_specs = {
         driver_handles_share_servers = false
         snapshot_support = true
-        share_backend_name = "VAST"
-        vippoolname = "client_manila"
       }
     }
 }
@@ -37,7 +35,6 @@ Argument reference:
     - `driver_handles_share_servers` (Required) bool
     - `snapshot_support` (Optional) bool
     - `share_backend_name` (Optional) string
-    - `vast_vippool_name` (Optional) string, note: required for VAST
     - can contain any additional vars if needed
 
 ## Sharetypes Access
@@ -51,8 +48,8 @@ Example usage:
 
 ```console
 sharetypes-access = {
-    "client4_sharetype_access" = {
-      sharetype_name = "client4_sharetype"
+    "client_sharetype_access" = {
+      sharetype_name = "client_sharetype"
       project = "client"
     }
 }

@@ -368,15 +368,6 @@ variable "sharetypes" {
     can(tobool(v.extra_specs["driver_handles_share_servers"])) ])
     error_message = "Each entry's extra_specs must include driver_handles_share_servers (bool)."
   }
-
-  validation {
-    condition = alltrue([ for k, v in var.sharetypes :
-    !contains(keys(v.extra_specs), "vast_vippool_name") ||
-    can(vastdata_vip_pool.vippools[v.extra_specs.vast_vippool_name].name)
-    ])
-    error_message = "vast_vippool_name given does not exsit"
-  }
-
   default = {}
 }
 
@@ -394,70 +385,6 @@ variable "sharetypes_access" {
       share_type_id  = optional(string)
       project        = optional(string)
       project_id     = optional(string)
-    })
-  )
-  default = {}
-}
-
-variable "vippools" {
-  description = <<-EOT
-    Map of vippools. Key is tofu resource name. Values are mappings with keys/values:
-      name: Optional string, if not provided network is used to template name of format "openstack_vlan_<segmentation_id>"
-      network: Optional string, tofu network resource name, used to template name and vlan if provided (using segmentation_id)
-      vlan: Optional number
-      role: Optional string
-      subnet_cidr: Optional number
-      tenant_id: Optional string, overridden by vast_tenant
-      vast_tenant: Optional string, vast tenant name, overrides tenant_id
-      vip_ranges: Optional list of objects -
-        subnet: Required string, tofu subnet resource name
-        start: Required number
-        end: Required number
-      ip_ranges: Optional list of strings.
-  EOT
-  type = map(
-    object({
-      name                  = optional(string)
-      network               = optional(string)
-      vlan                  = optional(number)
-      role                  = optional(string)
-      subnet_cidr           = optional(number)
-      tenant_id             = optional(string)
-      vast_tenant           = optional(string)
-      # may need renaming
-      vip_ranges            = optional(list(object({
-        subnet = string
-        start  = number
-        end    = number
-      })), [])
-      ip_ranges             = optional(list(list(string)), null)
-    })
-  )
-  default = {}
-}
-
-variable "vast_tenants" {
-  description = <<-EOT
-    Map of vast tenants. Key is tofu resource name. Values are mappings with keys/values:
-      allow_locked_users: Optional bool
-      allow_disabled_users: Optional bool
-      client_ranges: Optional list of objects, overridden by client_ip_ranges
-        subnet: Required string, tofu subnet resource name
-        start: Required number
-        end: Required number
-      client_ip_ranges: Optional list, overrides client_ip_ranges
-  EOT
-  type = map(
-    object({
-      allow_locked_users   = optional(bool, null)
-      allow_disabled_users = optional(bool, null)
-      # may need renaming
-      client_ranges        = optional(list(object({
-        subnet = string
-        start  = number
-        end    = number
-      })), [])
-      client_ip_ranges     = optional(list(list(string)), [])
     })
   )
   default = {}

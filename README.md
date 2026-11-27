@@ -20,7 +20,7 @@ an OpenTofu configuration including a module block referencing it. E.g.:
 module "openstack" {
 
   # The version here should be changed to the current release:
-  source = "github.com/stackhpc/tofu-openstack-config?ref=main"
+  source = "github.com/stackhpc/tofu-openstack-config//modules/openstack?ref=main"
 
   projects = {
     test = {
